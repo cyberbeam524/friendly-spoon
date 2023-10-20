@@ -31,8 +31,8 @@ config = cloudinary.config(secure=True)
 import cloudinary
 import toml
 
-# config = toml.load("config.toml")
-config = st.secrets
+config = toml.load("config.toml")
+# config = st.secrets
 
 cloudinary.config( 
   cloud_name = config['cloudinary']["cloudinary_cloud_name"], 
@@ -346,10 +346,37 @@ def png_export():
 
         </style> """
     
+    
     if text_prompt:
         print(text_prompt)
 
-    data = st_canvas(update_streamlit=False, key="png_export")
+    drawing_mode = st.sidebar.selectbox(
+        "Drawing tool:",
+        ("freedraw", "line", "rect", "circle", "transform", "polygon", "point"),
+    )
+    stroke_width = st.sidebar.slider("Stroke width: ", 1, 25, 3)
+    if drawing_mode == "point":
+        point_display_radius = st.sidebar.slider("Point display radius: ", 1, 25, 3)
+    stroke_color = st.sidebar.color_picker("Stroke color hex: ")
+    bg_color = st.sidebar.color_picker("Background color hex: ", "#eee")
+    bg_image = st.sidebar.file_uploader("Background image:", type=["png", "jpg"])
+    # realtime_update = st.sidebar.checkbox("Update in realtime", True)
+
+
+    data = st_canvas(
+            fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
+            stroke_width=stroke_width,
+            stroke_color=stroke_color,
+            background_color=bg_color,
+            background_image=Image.open(bg_image) if bg_image else None,
+            # update_streamlit=realtime_update,
+            height=300,
+            drawing_mode=drawing_mode,
+            point_display_radius=point_display_radius if drawing_mode == "point" else 0,
+            display_toolbar=st.sidebar.checkbox("Display toolbar", True),
+            update_streamlit=False, 
+            key="png_export"
+            )
     sum_data = np.sum(data.image_data)
     # print(f"data - {sum_data}: {data.image_data}")
     

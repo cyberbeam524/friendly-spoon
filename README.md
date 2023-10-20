@@ -7,7 +7,8 @@ Please visit https://friendly-spoon-65oeqxj4lj56emjfnokuay.streamlit.app/ to acc
 
 - Using both text and drawing inputs from user to generate a beautiful comic image
 
-### Steps to replicate project locally
+### Steps to use the app
+
 
 1. Type in a text prompt to describe the image you want generated.
 <img src="./img/text_prompt.png" style="width: 75%">
@@ -21,15 +22,40 @@ Please visit https://friendly-spoon-65oeqxj4lj56emjfnokuay.streamlit.app/ to acc
 
 4. Click the delete button to clear canvas and try again
 
-
 Future improvements:
 - Adding more refined drawing tools 
 - Experiment with more models to make it more comic looking
 - Panel templates for placing generated images
 
+### Steps to replicate project locally
+
+#### Install dependencies
+```
+pip install -r requirements.txt
+```
+
+#### Replace lines 34 and 35 with the below statements
+```
+config = toml.load("config.toml")
+# config = st.secrets
+```
+
+#### Add environment variables for APIs in config.toml file:
+- cloudinary and 
+- replicate
+
+#### Run app with the following command
+```
+python -m streamlit run streamlit_app.py
+```
 
 Dependencies:
 - streamlit>=0.88
 - streamlit-drawable-canvas>=0.8
 - svgpathtools
 - svgwrite
+
+
+https://replicate.com/fofr/image-prompts/examples
+https://replicate.com/fofr/llama2-prompter/examples
+https://replicate.com/tstramer/midjourney-diffusion
