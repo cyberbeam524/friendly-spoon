@@ -50,6 +50,7 @@ def getAssetInfo(image_id):
 
   # Log the new tag to the console.
   print("New tag: ", update_resp["tags"], "\n")
+  return image_info
 
 
 
