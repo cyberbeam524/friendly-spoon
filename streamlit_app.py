@@ -14,6 +14,27 @@ from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 from svgpathtools import parse_path
 
+# Import the Cloudinary libraries
+# ==============================
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+# Import to format the JSON responses
+# ==============================
+import json
+
+# Set configuration parameter: return "https" URLs by setting secure=True  
+# ==============================
+config = cloudinary.config(secure=True)
+
+import cloudinary
+          
+cloudinary.config( 
+  cloud_name = "dfniun5i8", 
+  api_key = "331112935958192", 
+  api_secret = "LnSW0oFBM-VbBL-LKVIjbg6vUCM" 
+)
 
 def main():
     if "button_id" not in st.session_state:
@@ -169,6 +190,8 @@ def center_circle_app():
                     f'Center coords: ({row["center_x"]:.2f}, {row["center_y"]:.2f}). Radius: {row["radius"]:.2f}'
                 )
 
+    # display generated ai image here:
+
 
 def color_annotation_app():
     st.markdown(
@@ -209,6 +232,26 @@ def color_annotation_app():
 
         with st.expander("Color to label mapping"):
             st.json(st.session_state["color_to_label"])
+
+def getAssetInfo(image_id):
+
+  # Get and use details of the image
+  # ==============================
+
+  # Get image details and save it in the variable 'image_info'.
+  image_info=cloudinary.api.resource(image_id)
+  print("****3. Get and use details of the image****\nUpload response:\n", json.dumps(image_info,indent=2), "\n")
+
+  # Assign tags to the uploaded image based on its width. Save the response to the update in the variable 'update_resp'.
+  if image_info["width"]>900:
+    update_resp=cloudinary.api.update("olympic_flag2", tags = "large")
+  elif image_info["width"]>500:
+    update_resp=cloudinary.api.update("olympic_flag2", tags = "medium")
+  else:
+    update_resp=cloudinary.api.update("olympic_flag2", tags = "small")
+
+  # Log the new tag to the console.
+  print("New tag: ", update_resp["tags"], "\n")
 
 
 def png_export():
@@ -273,6 +316,17 @@ def png_export():
         img_data = data.image_data
         im = Image.fromarray(img_data.astype("uint8"), mode="RGBA")
         im.save(file_path, "PNG")
+
+        # saveImage here to cloudinary for public url:
+        # get all ids from cloudinary -- get latest id and increment for new image name:
+        cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg", 
+        public_id = "id1")
+
+        # send image and description input into api get get genearte imaged :
+        # display generated image:
+        uploaded_details = getAssetInfo("id1")
+        secure_url = uploaded_details["secure_url"]
+        print(f"secure_url: {secure_url}")
 
         buffered = BytesIO()
         im.save(buffered, format="PNG")
