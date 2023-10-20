@@ -235,26 +235,54 @@ def color_annotation_app():
 
 def getAssetInfo(image_id):
 
-  # Get and use details of the image
-  # ==============================
+    # Get and use details of the image
+    # ==============================
 
-  # Get image details and save it in the variable 'image_info'.
-  image_info=cloudinary.api.resource(image_id)
-  print("****3. Get and use details of the image****\nUpload response:\n", json.dumps(image_info,indent=2), "\n")
+    # Get image details and save it in the variable 'image_info'.
+    image_info=cloudinary.api.resource(image_id)
+    print("****3. Get and use details of the image****\nUpload response:\n", json.dumps(image_info,indent=2), "\n")
 
-  # Assign tags to the uploaded image based on its width. Save the response to the update in the variable 'update_resp'.
-  if image_info["width"]>900:
-    update_resp=cloudinary.api.update("olympic_flag2", tags = "large")
-  elif image_info["width"]>500:
-    update_resp=cloudinary.api.update("olympic_flag2", tags = "medium")
-  else:
-    update_resp=cloudinary.api.update("olympic_flag2", tags = "small")
+    # # Assign tags to the uploaded image based on its width. Save the response to the update in the variable 'update_resp'.
+    # if image_info["width"]>900:
+    #     update_resp=cloudinary.api.update("olympic_flag2", tags = "large")
+    # elif image_info["width"]>500:
+    #     update_resp=cloudinary.api.update("olympic_flag2", tags = "medium")
+    # else:
+    #     update_resp=cloudinary.api.update("olympic_flag2", tags = "small")
 
-  # Log the new tag to the console.
-  print("New tag: ", update_resp["tags"], "\n")
+    # # Log the new tag to the console.
+    # print("New tag: ", update_resp["tags"], "\n")
+    return image_info
 
+def getGeneratedImage(prompt_text, prompt_img, num_images = 1):
+    import replicate
+    replicate = replicate.Client(api_token='r8_09YHrLph0mfNEKyJJtAm1SfUmTMXS3b23kDXT')
+    output = replicate.run(
+    # "stability-ai/stable-diffusion:27b93a2413e7f36cd83da926f3656280b2931564ff050bf9575f1fdf9bcd7478",
+    # input={"prompt": "an iguana on the beach, pointillism"}
+    "stability-ai/stable-diffusion-img2img:15a3689ee13b0d2616e98820eca31d4c3abcd36672df6afce5cb6feb1d66087d",
+    input = {
+    "image": prompt_img,
+    # "image": "/content/sketch-mountains-input.jpeg",
+    "width": 512,
+    "height": 512,
+    "prompt": prompt_text,
+    "scheduler": "K_EULER_ANCESTRAL",
+    "num_outputs": num_images,
+    "guidance_scale": 7.5,
+    "prompt_strength": 0.8,
+    "num_inference_steps": 25
+    }
+    )
+    return output
 
 def png_export():
+
+    text_prompt = st.text_input(label="Hello", value=""
+                #   , max_chars=None, key=None, type="default", help=None, autocomplete=None, on_change=None, args=None, kwargs=None, *, placeholder=None, disabled=False, label_visibility="visible"
+                  )
+
+
     st.markdown(
         """
     Realtime update is disabled for this demo. 
@@ -309,24 +337,38 @@ def png_export():
                 background-color: rgb(246, 51, 102);
                 color: white;
                 }}
+
         </style> """
+    
+    if text_prompt:
+        print(text_prompt)
 
     data = st_canvas(update_streamlit=False, key="png_export")
-    if data is not None and data.image_data is not None:
+    sum_data = np.sum(data.image_data)
+    # sum(list(data.image_data))
+    print(f"data - {sum_data}: {data.image_data}")
+    
+    if sum_data != 0 and data is not None and data.image_data is not None and len(text_prompt) != 0:
         img_data = data.image_data
         im = Image.fromarray(img_data.astype("uint8"), mode="RGBA")
         im.save(file_path, "PNG")
 
         # saveImage here to cloudinary for public url:
         # get all ids from cloudinary -- get latest id and increment for new image name:
-        cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg", 
-        public_id = "id1")
-
+        cloudinary.uploader.upload(file_path, 
+        public_id = f"{button_id}")
         # send image and description input into api get get genearte imaged :
         # display generated image:
-        uploaded_details = getAssetInfo("id1")
+        uploaded_details = getAssetInfo(f"{button_id}")
         secure_url = uploaded_details["secure_url"]
         print(f"secure_url: {secure_url}")
+
+        genImgs = getGeneratedImage(text_prompt, secure_url)
+        for imgUrl in genImgs:
+            print(imgUrl)
+            st.image(imgUrl
+                    #  , caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto"
+                     )
 
         buffered = BytesIO()
         im.save(buffered, format="PNG")
