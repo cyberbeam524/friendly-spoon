@@ -1,5 +1,6 @@
 # GenAI for Comics
 
+Work alongside an AI model of your choice to create your favourite visual comics!
 Please visit https://friendly-spoon-65oeqxj4lj56emjfnokuay.streamlit.app/ to access the app.
 
 ### Considerations
@@ -23,8 +24,12 @@ Please visit https://friendly-spoon-65oeqxj4lj56emjfnokuay.streamlit.app/ to acc
 
 Future improvements:
 - Adding more refined drawing tools 
+- Experiment with more models to make it more comic looking
+- Panel templates for placing generated images
+
+
 Dependencies:
-streamlit>=0.88
-streamlit-drawable-canvas>=0.8
-svgpathtools
-svgwrite
+- streamlit>=0.88
+- streamlit-drawable-canvas>=0.8
+- svgpathtools
+- svgwrite

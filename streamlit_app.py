@@ -29,12 +29,25 @@ import json
 config = cloudinary.config(secure=True)
 
 import cloudinary
-          
+import toml
+
+# from dotenv import load_dotenv
+# load_dotenv()  # take environment variables from .env.
+
+config = toml.load("config.toml")
+
+# cloudinary.config( 
+#   cloud_name = os.environ["cloudinary_cloud_name"], 
+#   api_key = os.environ["cloudinary_api_key"], 
+#   api_secret = os.environ["cloudinary_api_secret"]
+# )
+
 cloudinary.config( 
-  cloud_name = "dfniun5i8", 
-  api_key = "331112935958192", 
-  api_secret = "LnSW0oFBM-VbBL-LKVIjbg6vUCM" 
+  cloud_name = config['cloudinary']["cloudinary_cloud_name"], 
+  api_key = config['cloudinary']["cloudinary_api_key"], 
+  api_secret = config['cloudinary']["cloudinary_api_secret"]
 )
+
 
 def main():
     if "button_id" not in st.session_state:
@@ -256,7 +269,8 @@ def getAssetInfo(image_id):
 
 def getGeneratedImage(prompt_text, prompt_img, num_images = 1):
     import replicate
-    replicate = replicate.Client(api_token='r8_09YHrLph0mfNEKyJJtAm1SfUmTMXS3b23kDXT')
+    # replicate = replicate.Client(api_token='r8_09YHrLph0mfNEKyJJtAm1SfUmTMXS3b23kDXT')
+    replicate = replicate.Client(api_token=config['replicate']["replicate_key"])
     output = replicate.run(
     # "stability-ai/stable-diffusion:27b93a2413e7f36cd83da926f3656280b2931564ff050bf9575f1fdf9bcd7478",
     # input={"prompt": "an iguana on the beach, pointillism"}
@@ -345,8 +359,7 @@ def png_export():
 
     data = st_canvas(update_streamlit=False, key="png_export")
     sum_data = np.sum(data.image_data)
-    # sum(list(data.image_data))
-    print(f"data - {sum_data}: {data.image_data}")
+    # print(f"data - {sum_data}: {data.image_data}")
     
     if sum_data != 0 and data is not None and data.image_data is not None and len(text_prompt) != 0:
         img_data = data.image_data
