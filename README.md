@@ -1,1 +1,7 @@
 # friendly-spoon
+
+
+streamlit>=0.88
+streamlit-drawable-canvas>=0.8
+svgpathtools
+svgwrite
