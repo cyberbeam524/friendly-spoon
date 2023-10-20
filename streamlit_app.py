@@ -42,12 +42,12 @@ def main():
     if "color_to_label" not in st.session_state:
         st.session_state["color_to_label"] = {}
     PAGES = {
-        "About": about,
-        "Basic example": full_app,
-        "Get center coords of circles": center_circle_app,
-        "Color-based image annotation": color_annotation_app,
         "Download Base64 encoded PNG": png_export,
-        "Compute the length of drawn arcs": compute_arc_length,
+        # "About": about,
+        "Basic example": full_app,
+        # "Get center coords of circles": center_circle_app,
+        # "Color-based image annotation": color_annotation_app,
+        # "Compute the length of drawn arcs": compute_arc_length,
     }
     page = st.sidebar.selectbox("Page:", options=list(PAGES.keys()))
     PAGES[page]()
@@ -278,7 +278,7 @@ def getGeneratedImage(prompt_text, prompt_img, num_images = 1):
 
 def png_export():
 
-    text_prompt = st.text_input(label="Hello", value=""
+    text_prompt = st.text_input(label="Text Prompt:", value=""
                 #   , max_chars=None, key=None, type="default", help=None, autocomplete=None, on_change=None, args=None, kwargs=None, *, placeholder=None, disabled=False, label_visibility="visible"
                   )
 
