@@ -421,7 +421,6 @@ if __name__ == "__main__":
     st.set_page_config(
         page_title="Streamlit Drawable Canvas Demo", page_icon=":pencil2:"
     )
-    st.title("Drawable Canvas Demo")
-    st.text("Drawable Canvas Demo")
+    st.title("Using GenAi for Comics and Notetaking")
     st.sidebar.subheader("Configuration")
     main()
