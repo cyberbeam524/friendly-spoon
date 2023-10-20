@@ -31,16 +31,8 @@ config = cloudinary.config(secure=True)
 import cloudinary
 import toml
 
-# from dotenv import load_dotenv
-# load_dotenv()  # take environment variables from .env.
-
 config = toml.load("config.toml")
-
-# cloudinary.config( 
-#   cloud_name = os.environ["cloudinary_cloud_name"], 
-#   api_key = os.environ["cloudinary_api_key"], 
-#   api_secret = os.environ["cloudinary_api_secret"]
-# )
+config = st.secrets
 
 cloudinary.config( 
   cloud_name = config['cloudinary']["cloudinary_cloud_name"], 
