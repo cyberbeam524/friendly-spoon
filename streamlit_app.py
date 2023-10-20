@@ -31,8 +31,8 @@ config = cloudinary.config(secure=True)
 import cloudinary
 import toml
 
-config = toml.load("config.toml")
-# config = st.secrets
+# config = toml.load("config.toml")
+config = st.secrets
 
 cloudinary.config( 
   cloud_name = config['cloudinary']["cloudinary_cloud_name"], 
