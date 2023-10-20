@@ -16,7 +16,7 @@ Please visit https://friendly-spoon-65oeqxj4lj56emjfnokuay.streamlit.app/ to acc
 
 3. Click on download button to trigger generating of image by stable diffusion AI model. The generated image should be visible below the canvas board.
 
-<img src="./img/buttons.png" style="width: 75%">
+<img src="./img/buttons.jpg" style="width: 75%">
 
 4. Click the delete button to clear canvas and try again
 
